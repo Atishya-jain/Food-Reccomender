@@ -1,7 +1,88 @@
-import urllib2
-import json
+var http = require("http");
 
-data = {
+var https = require("https");
+
+var querystring = require("querystring");
+
+var fs = require('fs');
+
+ 
+
+function getPred(data) {
+
+
+var dataString = JSON.stringify(data)
+
+var host = 'ussouthcentral.services.azureml.net'
+
+var path = '/workspaces/28e0446f7f3f475083aef3186ce5e9b1/services/23160a643d124e87974fee18d2572197/execute?api-version=2.0&format=swagger'
+
+var method = 'POST'
+
+var api_key = 'H36SNAlOQpz19IIIAcgFcbO6nrSdFrk8ieqMe/QIi3+dqx66tyqJyM36Ykm4Ua0QuRlc8WFqLuNnEG9vQiSzTA=='
+
+var headers = {'Content-Type':'application/json', 'Authorization':'Bearer ' + api_key};
+
+ 
+
+var options = {
+
+host: host,
+
+port: 443,
+
+path: path,
+
+method: 'POST',
+
+headers: headers
+
+};
+
+ 
+
+
+ 
+
+var reqPost = https.request(options, function (res) {
+
+
+ 
+
+res.on('data', function(d) {
+
+process.stdout.write(d);
+
+});
+
+});
+
+ 
+
+// Would need more parsing out of prediction from the result
+
+reqPost.write(dataString);
+
+reqPost.end();
+
+reqPost.on('error', function(e){
+
+console.error(e);
+
+});
+
+ 
+
+}
+
+ 
+
+//Could build feature inputs from web form or RDMS. This is the new data that needs to be passed to the web service.
+
+function buildFeatureInput(){
+
+
+var data = {
         "Inputs": {
                 "input1":
                 [
@@ -91,22 +172,44 @@ data = {
     }
 }
 
-body = str.encode(json.dumps(data))
+getPred(data);
 
-url = 'https://ussouthcentral.services.azureml.net/workspaces/28e0446f7f3f475083aef3186ce5e9b1/services/23160a643d124e87974fee18d2572197/execute?api-version=2.0&format=swagger'
-api_key = 'H36SNAlOQpz19IIIAcgFcbO6nrSdFrk8ieqMe/QIi3+dqx66tyqJyM36Ykm4Ua0QuRlc8WFqLuNnEG9vQiSzTA==' # Replace this with the API key for the web service
-headers = {'Content-Type':'application/json', 'Authorization':('Bearer '+ api_key)}
+}
 
-req = urllib2.Request(url, body, headers)
+ 
 
-try:
-    response = urllib2.urlopen(req)
+ 
 
-    result = response.read()
-    print(result)
-except urllib2.HTTPError, error:
-    print("The request failed with status code: " + str(error.code))
+function send404Reponse(response) {
 
-    # Print the headers - they include the requert ID and the timestamp, which are useful for debugging the failure
-    print(error.info())
-    print(json.loads(error.read()))
+response.writeHead(404, {"Context-Type": "text/plain"});
+
+response.write("Error 404: Page not Found!");
+
+response.end();
+
+}
+
+ 
+
+function onRequest(request, response) {
+
+if(request.method == 'GET' && request.url == '/' ){
+
+response.writeHead(200, {"Context-Type": "text/plain"});
+
+fs.createReadStream("./index.html").pipe(response);
+
+}else {
+
+send404Reponse(response);
+
+}
+
+}
+
+// http.createServer(onRequest).listen(8050);
+
+// console.log("Server is now running on port 8050");
+
+buildFeatureInput();

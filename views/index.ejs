@@ -2,8 +2,108 @@
 <html>
 <head>
 	<title>Home</title>
+	<link href="https://fonts.googleapis.com/css?family=Indie+Flower" rel="stylesheet">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="static/css/dropdownLogin.css">
+	<link rel="stylesheet" type="text/css" href="static/css/styleMain.css">
 </head>
 <body>
-	<h1>Hi</h1>
+	<!-- /// -->
+	
+	<!-- /// -->
+	<div id="topDetails">
+		<% if(isLoggedIn==1){ %>
+			<a id="right2" href="/logout">Logout</a>
+		<% }else{ %>
+			<!-- <a id="right1" href="/login">Login</a>
+			<a id="right2" href="/register">Signup</a> -->
+			<div id="wrap">
+      <a href="#" id="loginform">Login</a> <a id="registerform" href="#">Register</a>
+    <div class="login">
+      <div class="formholder">
+        <div class="randompad">
+           <fieldset>
+            <form action="/login" method="post"> 
+             <label style="text-align: center;width: 100%" name="username">Username</label>
+             <input type="text" name="username" required>
+             <label style="text-align: center;width: 100%" name="password">Password</label>
+             <input type="password" name="password"  required>
+             <input type="submit" value="Let me in" />
+            </form> 
+           </fieldset>
+        </div>
+      </div>
+    </div>
+    <div class="register">
+      <div class="formholder">
+        <div class="randompad">
+           <fieldset>
+            <form id="register" action="/register" method="post">
+             <label style="text-align: center;width: 100%" name="username">Username</label>
+             <input type="text" name="username" required>
+             <label style="text-align: center;width: 100%" name="password">Password</label>
+             <input type="password" name="password" required>
+             <input id="locationName" style="display:none" type="text" name="locationName">
+            <input id="lat" style="display:none" type="text" name="latitude">
+            <input id="long" style="display:none" type="text" name="longitude">
+             <button id="getLocation" type="button">Get Location</button>
+             <p></p>
+             <input id="submitButton" class="disabledButton" type="submit" value="Register" disabled>
+             </form>
+ 
+           </fieldset>
+        </div>
+      </div>
+    </div>
+</div>
+
+		<% } %>
+		<br>
+		<br>
+		<br>
+		<br>
+		<div id="heading">			
+			<h1 style="padding-top:30px">RestoRecommendo</h1>
+			<h4 style="padding-bottom:30px" >we use our magic sauces to make sure your food is always to your taste</h4>
+		</div>
+		<br>
+	</div>
+	<br>
+
+	<% for(var i=0; i < outlets.length; i++) { %>
+		<div style="width:33.33%" class="container" ontouchstart="this.classList.toggle('hover');">
+			<div class="flipper">
+				<div class="front">		
+				  <div class="w3-card-4" style="width:100%">
+				    <img id="hei1" src="<%= outlets[i]['img'] %>" alt="Norway" style="width:100%">
+				    <div  id="hei2" class="w3-container w3-center">
+				      <p> <%= outlets[i]["name"] %></p>
+				    </div>
+				  </div>
+				</div>	
+				<div class="back">		
+				  <div class="w3-card-4" style="width:100%">
+				    <div class="w3-container w3-left">
+				      <p>Address: <%= outlets[i]["address"] %></p>
+				      <p>Cuisine: <%= outlets[i]["cuisine"] %></p>
+				      <p>Phone: <%= outlets[i]["phone"] %></p>
+				      <p style="font-size: 0.9em">About: <%= outlets[i]["about"] %></p>
+				    </div>
+				  </div>
+				</div>
+			</div>
+		</div>
+		<!-- <div>
+			<p>Name: <%= outlets[i]["name"] %></p>
+			<p>About: <%= outlets[i]["about"] %></p>
+			<p>Address: <%= outlets[i]["address"] %></p>
+			<p>Cuisine: <%= outlets[i]["cuisine"] %></p>
+			<p>Phone: <%= outlets[i]["phone"] %></p>
+			<hr>
+		</div> -->
+	<%}%>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script  src="static/js/dropdownLogin.js"></script>
 </body>
 </html>
